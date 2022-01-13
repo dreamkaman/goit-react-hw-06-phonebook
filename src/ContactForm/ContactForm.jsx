@@ -1,5 +1,8 @@
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { contactActions } from '../redux/ContactForm/ContactFormAction';
 
 import InputElement from './InputElement';
 import Button from '../Button';
@@ -7,6 +10,9 @@ import Button from '../Button';
 import styles from './ContactForm.module.css';
 
 function ContactForm({ onFormSubmit }) {
+  const dispatch = useDispatch();
+  const contact = useSelector(state =>);
+  
   const [contacts, setContacts] = useState({ name: '', number: '' });
 
   const { name, number } = contacts;
