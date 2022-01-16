@@ -1,32 +1,42 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { contactActions } from '../redux/ContactForm/ContactFormAction';
+import { addContactAction } from '../../redux/contacts/contactsAction.js';
 
 import InputElement from './InputElement';
 import Button from '../Button';
 
 import styles from './ContactForm.module.css';
 
-function ContactForm({ onFormSubmit }) {
+function ContactForm() {
   const dispatch = useDispatch();
-  const contact = useSelector(state =>);
-  
-  const [contacts, setContacts] = useState({ name: '', number: '' });
+  const contacts = useSelector(state => state.items);
 
-  const { name, number } = contacts;
+  const [contact, setContact] = useState({ name: '', number: '' });
+
+  const { name, number } = contact;
 
   const handleChange = event => {
     const key = event.target.name;
-    setContacts(prevstate => ({ ...prevstate, [key]: event.target.value }));
+    setContact(prevstate => ({ ...prevstate, [key]: event.target.value }));
   };
 
   const handleSubmit = event => {
     event.preventDefault();
-    onFormSubmit(name, number);
-    setContacts({ name: '', number: '' });
+
+    if (isContactExist(name)) {
+      alert(`${name} is already in contacts!`);
+
+      return;
+    }
+
+    dispatch(addContactAction(name, number));
+    setContact({ name: '', number: '' });
   };
+
+  function isContactExist(name) {
+    return !!contacts.find(contact => contact.name.toUpperCase().includes(name.toUpperCase()));
+  }
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
@@ -54,7 +64,3 @@ function ContactForm({ onFormSubmit }) {
 }
 
 export default ContactForm;
-
-ContactForm.propTypes = {
-  onFormSubmit: PropTypes.func,
-};

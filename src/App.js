@@ -1,65 +1,68 @@
-import { useEffect, useState } from 'react';
-import { nanoid } from 'nanoid';
+import { useSelector, useDispatch } from 'react-redux';
+import { changeFilterAction } from './redux/filter/filterAction';
 
-import ContactForm from './ContactForm';
-import Section from './Section';
-import ContactList from './ContactList';
-import InputElement from './ContactForm/InputElement';
+import ContactForm from './components/ContactForm';
+import Section from './components/Section';
+import ContactList from './components/ContactList';
+import InputElement from './components/ContactForm/InputElement';
 
 import styles from './App.module.css';
 
 function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  const dispatch = useDispatch();
+  const filter = useSelector(state => state.filter);
 
-  function isContactExist(name) {
-    return !!contacts.find(contact => contact.name.toUpperCase().includes(name.toUpperCase()));
-  }
+  // const [contacts, setContacts] = useState([]);
+  // const [filter, setFilter] = useState('');
 
-  function filterContacts() {
-    return contacts.filter(contact => contact.name.toUpperCase().includes(filter.toUpperCase()));
-  }
+  // function isContactExist(name) {
+  //   return !!contacts.find(contact => contact.name.toUpperCase().includes(name.toUpperCase()));
+  // }
 
-  const handleDelete = id => {
-    const newContacts = contacts.filter(contact => contact.id !== id);
+  // function filterContacts() {
+  //   return contacts.filter(contact => contact.name.toUpperCase().includes(filter.toUpperCase()));
+  // }
 
-    setContacts(newContacts);
-    // setFilter('');
-  };
+  // const handleDelete = id => {
+  //   const newContacts = contacts.filter(contact => contact.id !== id);
+
+  //   setContacts(newContacts);
+
+  // };
 
   //Обработчик события
-  const addContact = (name, number) => {
-    if (isContactExist(name)) {
-      alert(`${name} is already in contacts!`);
+  // const addContact = (name, number) => {
+  //   if (isContactExist(name)) {
+  //     alert(`${name} is already in contacts!`);
 
-      return;
-    }
+  //     return;
+  //   }
 
-    const id = nanoid();
+  //   const id = nanoid();
 
-    setContacts(prevstate => [...prevstate, { id, name, number }]);
-    setFilter('');
-  };
+  //   setContacts(prevstate => [...prevstate, { id, name, number }]);
+  //   setFilter('');
+  // };
 
   const handleChange = event => {
-    setFilter(event.target.value);
+    dispatch(changeFilterAction(event.target.value));
   };
 
-  useEffect(() => {
-    const arr = JSON.parse(localStorage.getItem('contacts'));
-    if (arr?.length) {
-      setContacts(arr);
-    }
-  }, []);
+  // useEffect(() => {
+  //   const arr = JSON.parse(localStorage.getItem('contacts'));
+  //   if (arr?.length) {
+  //     setContacts(arr);
+  //   }
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   localStorage.setItem('contacts', JSON.stringify(contacts));
+  // }, [contacts]);
 
   return (
     <>
       <Section title="Phonebook">
-        <ContactForm onFormSubmit={addContact} />
+        <ContactForm />
       </Section>
       <Section title="Contacts">
         <InputElement
@@ -70,7 +73,7 @@ function App() {
           text="Find contacts by name"
           onChange={handleChange}
         />
-        <ContactList contacts={filterContacts()} onClick={handleDelete} />
+        <ContactList />
       </Section>
     </>
   );
